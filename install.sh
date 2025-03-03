@@ -1,164 +1,49 @@
-set $mod Mod4
+#!/bin/bash
 
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:RobotoMono Nerd Font Regular 14
+sudo apt update && sudo apt upgrade -y
 
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+sudo apt install alacritty -y
+sudo apt install -y wget curl git thunar
+sudo apt install -y arandr flameshot arc-theme feh i3blocks i3status i3 i3-wm lxappearance python3-pip rofi unclutter cargo compton papirus-icon-theme imagemagick
+sudo apt install -y libxcb-shape0-dev libxcb-keysyms1-dev libpango1.0-dev libxcb-util0-dev xcb libxcb1-dev libxcb-icccm4-dev libyajl-dev libev-dev libxcb-xkb-dev libxcb-cursor-dev libxkbcommon-dev libxcb-xinerama0-dev libxkbcommon-x11-dev libstartup-notification0-dev libxcb-randr0-dev libxcb-xrm0 libxcb-xrm-dev autoconf meson
+sudo apt install -y libxcb-render-util0-dev libxcb-shape0-dev libxcb-xfixes0-dev 
 
-# start a terminal
-bindsym $mod+Return exec alacritty
+mkdir -p ~/.local/share/fonts/
 
-# kill focused window
-bindsym $mod+w kill
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Iosevka.zip
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/RobotoMono.zip
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec "rofi -show run"
+unzip Iosevka.zip -d ~/.local/share/fonts/
+unzip RobotoMono.zip -d ~/.local/share/fonts/
 
-# change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+fc-cache -fv
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+wget https://github.com/barnumbirr/alacritty-debian/releases/download/v0.10.0-rc4-1/alacritty_0.10.0-rc4-1_amd64_bullseye.deb
+sudo dpkg -i alacritty_0.10.0-rc4-1_amd64_bullseye.deb
+sudo apt install -f
 
-# move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
+git clone https://www.github.com/Airblader/i3 i3-gaps
+cd i3-gaps && mkdir -p build && cd build && meson ..
+ninja
+sudo ninja install
+cd ../..
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+pip3 install pywal
 
-# split in horizontal orientation
-bindsym $mod+h split h
+mkdir -p ~/.config/i3
+mkdir -p ~/.config/compton
+mkdir -p ~/.config/rofi
+mkdir -p ~/.config/alacritty
+cp .config/i3/config ~/.config/i3/config
+cp .config/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
+cp .config/i3/i3blocks.conf ~/.config/i3/i3blocks.conf
+cp .config/compton/compton.conf ~/.config/compton/compton.conf
+cp .config/rofi/config ~/.config/rofi/config
+cp .fehbg ~/.fehbg
+cp .config/i3/clipboard_fix.sh ~/.config/i3/clipboard_fix.sh
+cp -r .wallpaper ~/.wallpaper 
 
-# split in vertical orientation
-bindsym $mod+v split v
+echo "Done! Grab some wallpaper and run pywal -i filename to set your color scheme. To have the wallpaper set on every boot edit ~.fehbg"
+echo "After reboot: Select i3 on login, run lxappearance and select arc-dark"
 
-# enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
-
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
-
-# focus the parent container
-bindsym $mod+a focus parent
-
-# switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
-
-# move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
-
-# reload the configuration file
-bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
-# resize window (you can also use the mouse for that)
-mode "resize" {
-    # These bindings trigger as soon as you enter the resize mode
-    bindsym j resize shrink width 10 px or 10 ppt
-    bindsym k resize grow height 10 px or 10 ppt
-    bindsym l resize shrink height 10 px or 10 ppt
-    bindsym semicolon resize grow width 10 px or 10 ppt
-
-    # same bindings, but for the arrow keys
-    bindsym Left resize shrink width 10 px or 10 ppt
-    bindsym Down resize grow height 10 px or 10 ppt
-    bindsym Up resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow width 10 px or 10 ppt
-
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-
-bindsym $mod+r mode "resize"
-
-# i3bar with i3blocks
-bar {
-    status_command i3blocks -c ~/.config/i3/i3blocks.conf
-    i3bar_command i3bar -t
-    position top
-    height 32  # Adjusted to fit the font size 14
-    font pango:RobotoMono Nerd Font Regular 14
-    colors {
-        statusline #EEEEEE
-        background #1C1D2B88
-        focused_workspace #282A3E88 #282A3E88 #FFFFFF
-        statusline #E6FFF5
-    }
-}
-
-# i3-gaps
-for_window [class="^.*"] border pixel 2
-gaps inner 2
-gaps outer 4
-
-client.focused #82c8ff #82c8ff #dddddd
-client.focused_inactive #333333 #333333 #888888
-client.unfocused #333333 #333333 #888888
-client.urgent #900000 #900000 #ffffff
-default_border normal
-
-# feh - Wallpaper Setter
-exec_always --no-startup-id sh ~/.fehbg
-
-# compton - Compositing Manager for Shadows and Opacity
-exec_always --no-startup-id compton -b --config ~/.config/compton/compton.conf
-
-# VM Clipboard Fix
-exec_always --no-startup-id ~/.config/i3/clipboard_fix.sh
-
-# Resize Bindings
-bindsym $mod+Ctrl+Shift+Right resize shrink width 10 px or 10 ppt
-bindsym $mod+Ctrl+Shift+Up resize grow height 10 px or 10 ppt
-bindsym $mod+Ctrl+Shift+Down resize shrink height 10 px or 10 ppt
-bindsym $mod+Ctrl+Shift+Left resize grow width 10 px or 10 ppt
-
-# screenshot
-bindsym $mod+P exec flameshot gui
-
-bindsym $mod+Tab workspace next
-bindsym $mod+Shift+Tab workspace prev
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
