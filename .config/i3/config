@@ -162,3 +162,6 @@ bindsym $mod+Ctrl+Shift+Left resize grow width 10 px or 10 ppt
 
 # screenshot
 bindsym $mod+P exec flameshot gui
+
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
