@@ -74,5 +74,10 @@ echo "To set your wallpaper on every boot, edit ~/.fehbg"
 # Install Oh My Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+#apply Arc-Dark Theme:
+echo '[Settings]
+gtk-theme-name="Arc-Dark"' > ~/.config/gtk-3.0/settings.ini
+echo 'gtk-theme-name="Arc-Dark"' > ~/.gtkrc-2.0
+
 # Final message
-echo "Reboot and select i3 at login. Run lxappearance and select Arc-Dark theme."
+echo "Reboot and select i3 at login. If not already set, run lxappearance and select Arc-Dark theme."
