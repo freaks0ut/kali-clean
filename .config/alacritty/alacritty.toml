@@ -1,5 +1,3 @@
-# Alacritty Configuration
-
 [env]
 TERM = "xterm-256color"
 
@@ -25,7 +23,8 @@ normal = { family = "RobotoMono Nerd Font", style = "Regular" }
 bold = { family = "RobotoMono Nerd Font", style = "Bold" }
 italic = { family = "RobotoMono Nerd Font", style = "Italic" }
 bold_italic = { family = "RobotoMono Nerd Font", style = "Bold Italic" }
-size = 16
+size = 11
+
 offset = { x = 0, y = 0 }
 builtin_box_drawing = true
 
@@ -70,10 +69,6 @@ indexed_colors = [
 ]
 draw_bold_text_with_bright_colors = true
 
-[bell]
-animation = "None"
-duration = 0
-
 [selection]
 save_to_clipboard = true
 
@@ -115,3 +110,8 @@ bindings = [
 
 [debug]
 log_level = "Warn"
+
+
+[bell]
+animation = "None"
+duration = 0
