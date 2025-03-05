@@ -113,5 +113,4 @@ log_level = "Warn"
 
 
 [bell]
-animation = "None"
 duration = 0
