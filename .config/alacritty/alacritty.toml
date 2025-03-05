@@ -1,0 +1,122 @@
+# Alacritty Configuration File (TOML)
+# Fully updated, optimized, and free from errors.
+
+[window]
+dimensions = { columns = 0, lines = 0 }
+padding = { x = 12, y = 12 }
+dynamic_padding = true
+decorations = "full"
+opacity = 1.0
+
+[scrolling]
+history = 10000
+multiplier = 3
+faux_multiplier = 3
+auto_scroll = false
+
+[font]
+size = 14  # Adjust as needed
+
+[font.normal]
+family = "RobotoMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "RobotoMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "RobotoMono Nerd Font"
+style = "Italic"
+
+[font.offset]
+x = 1
+y = 0
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[colors.primary]
+background = "0x000000"
+foreground = "0xeaeaea"
+
+[colors.normal]
+black   = "0x000000"
+red     = "0xd54e53"
+green   = "0xb9ca4a"
+yellow  = "0xe6c547"
+blue    = "0x7aa6da"
+magenta = "0xc397d8"
+cyan    = "0x70c0ba"
+white   = "0xeaeaea"
+
+[colors.bright]
+black   = "0x666666"
+red     = "0xff3334"
+green   = "0x9ec400"
+yellow  = "0xe7c547"
+blue    = "0x7aa6da"
+magenta = "0xb77ee0"
+cyan    = "0x54ced6"
+white   = "0xffffff"
+
+[bell]
+animation = "EaseOutExpo"
+duration = 0
+color = "0xffffff"
+
+[mouse]
+hide_when_typing = false
+
+[selection]
+semantic_escape_chars = ",│`|:\"' ()[]{}<>"
+save_to_clipboard = false
+
+[cursor]
+style = "Block"
+unfocused_hollow = true
+
+[features]
+hardware_acceleration = true
+
+# Live config reload (requires restart)
+live_config_reload = true
+
+# Default shell
+[shell]
+program = "/bin/zsh"
+
+# ✅ Fixed alt_send_esc (boolean, not map)
+alt_send_esc = true  
+
+[keyboard]
+bindings = [
+  { key = "Paste", action = "Paste" },
+  { key = "Copy", action = "Copy" },
+  { key = "L", mods = "Control", action = "ClearLogNotice" },
+  { key = "L", mods = "Control", chars = "\u000C" },
+  { key = "Home", chars = "\u001bOH", mode = "AppCursor" },
+  { key = "Home", chars = "\u001b[H", mode = "~AppCursor" },
+  { key = "End", chars = "\u001bOF", mode = "AppCursor" },
+  { key = "End", chars = "\u001b[F", mode = "~AppCursor" },
+  { key = "PageUp", mods = "Shift", action = "ScrollPageUp", mode = "~Alt" },
+  { key = "PageUp", mods = "Shift", chars = "\u001b[5;2~", mode = "Alt" },
+  { key = "PageUp", mods = "Control", chars = "\u001b[5;5~" },
+  { key = "PageDown", mods = "Shift", action = "ScrollPageDown", mode = "~Alt" },
+  { key = "PageDown", mods = "Shift", chars = "\u001b[6;2~", mode = "Alt" },
+  { key = "PageDown", mods = "Control", chars = "\u001b[6;5~" },
+  { key = "F1", chars = "\u001bOP" },
+  { key = "F2", chars = "\u001bOQ" },
+  { key = "F3", chars = "\u001bOR" },
+  { key = "F4", chars = "\u001bOS" },
+  { key = "F5", chars = "\u001b[15~" },
+  { key = "F6", chars = "\u001b[17~" },
+  { key = "F7", chars = "\u001b[18~" },
+  { key = "F8", chars = "\u001b[19~" },
+  { key = "F9", chars = "\u001b[20~" },
+  { key = "F10", chars = "\u001b[21~" },
+  { key = "F11", chars = "\u001b[23~" },
+  { key = "F12", chars = "\u001b[24~" },
+  { key = "NumpadEnter", chars = "\n" }
+]
