@@ -1,122 +1,117 @@
-# Alacritty Configuration File (TOML)
-# Fully updated, optimized, and free from errors.
+# Alacritty Configuration
+
+[env]
+TERM = "xterm-256color"
+
+[shell]
+program = "/usr/bin/zsh"
+args = ["--login"]
 
 [window]
 dimensions = { columns = 0, lines = 0 }
 padding = { x = 12, y = 12 }
 dynamic_padding = true
-decorations = "full"
+decorations = "None"
 opacity = 1.0
+blur = true
+dynamic_title = true
+resize_increments = false
 
 [scrolling]
-history = 10000
-multiplier = 3
-faux_multiplier = 3
-auto_scroll = false
+history = 65535
 
 [font]
-size = 14  # Adjust as needed
-
-[font.normal]
-family = "RobotoMono Nerd Font"
-style = "Regular"
-
-[font.bold]
-family = "RobotoMono Nerd Font"
-style = "Bold"
-
-[font.italic]
-family = "RobotoMono Nerd Font"
-style = "Italic"
-
-[font.offset]
-x = 1
-y = 0
-
-[font.glyph_offset]
-x = 0
-y = 0
+normal = { family = "RobotoMono Nerd Font", style = "Regular" }
+bold = { family = "RobotoMono Nerd Font", style = "Bold" }
+italic = { family = "RobotoMono Nerd Font", style = "Italic" }
+bold_italic = { family = "RobotoMono Nerd Font", style = "Bold Italic" }
+size = 16
+offset = { x = 0, y = 0 }
+builtin_box_drawing = true
 
 [colors.primary]
-background = "0x000000"
-foreground = "0xeaeaea"
+background = "#1E1E2E"
+foreground = "#CDD6F4"
+dim_foreground = "#CDD6F4"
+bright_foreground = "#CDD6F4"
+
+[colors.cursor]
+text = "#1E1E2E"
+cursor = "#F5E0DC"
+
+[colors.selection]
+text = "#1E1E2E"
+background = "#F5E0DC"
 
 [colors.normal]
-black   = "0x000000"
-red     = "0xd54e53"
-green   = "0xb9ca4a"
-yellow  = "0xe6c547"
-blue    = "0x7aa6da"
-magenta = "0xc397d8"
-cyan    = "0x70c0ba"
-white   = "0xeaeaea"
+black = "#45475A"
+red = "#F38BA8"
+green = "#A6E3A1"
+yellow = "#F9E2AF"
+blue = "#89B4FA"
+magenta = "#F5C2E7"
+cyan = "#94E2D5"
+white = "#BAC2DE"
 
 [colors.bright]
-black   = "0x666666"
-red     = "0xff3334"
-green   = "0x9ec400"
-yellow  = "0xe7c547"
-blue    = "0x7aa6da"
-magenta = "0xb77ee0"
-cyan    = "0x54ced6"
-white   = "0xffffff"
+black = "#585B70"
+red = "#F38BA8"
+green = "#A6E3A1"
+yellow = "#F9E2AF"
+blue = "#89B4FA"
+magenta = "#F5C2E7"
+cyan = "#94E2D5"
+white = "#A6ADC8"
+
+[colors]
+indexed_colors = [
+  { index = 16, color = "#FAB387" },
+  { index = 17, color = "#F5E0DC" },
+]
+draw_bold_text_with_bright_colors = true
 
 [bell]
-animation = "EaseOutExpo"
+animation = "None"
 duration = 0
-color = "0xffffff"
-
-[mouse]
-hide_when_typing = false
 
 [selection]
-semantic_escape_chars = ",│`|:\"' ()[]{}<>"
-save_to_clipboard = false
+save_to_clipboard = true
+
+[cursor.style]
+shape = "Beam"
+blinking = "Always"
 
 [cursor]
-style = "Block"
-unfocused_hollow = true
+blink_interval = 500
+blink_timeout = 0
 
-[features]
-hardware_acceleration = true
-
-# Live config reload (requires restart)
-live_config_reload = true
-
-# Default shell
-[shell]
-program = "/bin/zsh"
-
-# ✅ Fixed alt_send_esc (boolean, not map)
-alt_send_esc = true  
+[mouse]
+hide_when_typing = true
+bindings = [
+  { mouse = "Middle", action = "PasteSelection" },
+]
 
 [keyboard]
 bindings = [
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+  { key = "C", mods = "Control|Shift", action = "Copy" },
   { key = "Paste", action = "Paste" },
   { key = "Copy", action = "Copy" },
+  { key = "Insert", mods = "Shift", action = "PasteSelection" },
+  { key = "F", mods = "Control|Shift", action = "SearchForward", mode = "~Search" },
+  { key = "B", mods = "Control|Shift", action = "SearchBackward", mode = "~Search" },
+  { key = "Key0", mods = "Control", action = "ResetFontSize" },
+  { key = "Equals", mods = "Control", action = "IncreaseFontSize" },
+  { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
   { key = "L", mods = "Control", action = "ClearLogNotice" },
-  { key = "L", mods = "Control", chars = "\u000C" },
-  { key = "Home", chars = "\u001bOH", mode = "AppCursor" },
-  { key = "Home", chars = "\u001b[H", mode = "~AppCursor" },
-  { key = "End", chars = "\u001bOF", mode = "AppCursor" },
-  { key = "End", chars = "\u001b[F", mode = "~AppCursor" },
+  { key = "L", mods = "Control", chars = "\f" },
   { key = "PageUp", mods = "Shift", action = "ScrollPageUp", mode = "~Alt" },
-  { key = "PageUp", mods = "Shift", chars = "\u001b[5;2~", mode = "Alt" },
-  { key = "PageUp", mods = "Control", chars = "\u001b[5;5~" },
   { key = "PageDown", mods = "Shift", action = "ScrollPageDown", mode = "~Alt" },
-  { key = "PageDown", mods = "Shift", chars = "\u001b[6;2~", mode = "Alt" },
-  { key = "PageDown", mods = "Control", chars = "\u001b[6;5~" },
-  { key = "F1", chars = "\u001bOP" },
-  { key = "F2", chars = "\u001bOQ" },
-  { key = "F3", chars = "\u001bOR" },
-  { key = "F4", chars = "\u001bOS" },
-  { key = "F5", chars = "\u001b[15~" },
-  { key = "F6", chars = "\u001b[17~" },
-  { key = "F7", chars = "\u001b[18~" },
-  { key = "F8", chars = "\u001b[19~" },
-  { key = "F9", chars = "\u001b[20~" },
-  { key = "F10", chars = "\u001b[21~" },
-  { key = "F11", chars = "\u001b[23~" },
-  { key = "F12", chars = "\u001b[24~" },
-  { key = "NumpadEnter", chars = "\n" }
+  { key = "Up", mods = "Shift", action = "ScrollLineUp", mode = "~Alt" },
+  { key = "Down", mods = "Shift", action = "ScrollLineDown", mode = "~Alt" },
+  { key = "Home", mods = "Shift", action = "ScrollToTop", mode = "~Alt" },
+  { key = "End", mods = "Shift", action = "ScrollToBottom", mode = "~Alt" },
 ]
+
+[debug]
+log_level = "Warn"
