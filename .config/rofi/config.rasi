@@ -1,0 +1,22 @@
+configuration {
+    modi: "window,run";
+    opacity: 30;
+    font: "DejaVu Sans Mono 20";
+    lines: 15;
+    columns: 3;
+    levenshtein-sort: true;
+    auto-select: false;
+    combi-modi: "window,run";
+    fuzzy: true;
+    separator-style: "solid";
+    hide-scrollbar: true;
+    fullscreen: false;
+    theme: "/usr/share/rofi/themes/Arc-Dark.rasi";
+}
+
+keybindings {
+    kb-row-left: "Control+Page_Up,Control+c";
+    kb-row-right: "Control+Page_Down,Control+r";
+    kb-row-up: "Up,Control+p,Shift+Tab,Shift+ISO_Left_Tab,Control+s";
+    kb-row-down: "Down,Control+n,Control+t";
+}

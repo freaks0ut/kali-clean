@@ -61,7 +61,7 @@ cp .config/i3/config ~/.config/i3/config
 cp .config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 cp .config/i3/i3blocks.conf ~/.config/i3/i3blocks.conf
 cp .config/compton/compton.conf ~/.config/compton/compton.conf
-cp .config/rofi/config ~/.config/rofi/config
+cp .config/rofi/config.rasi ~/.config/rofi/config.rasi
 cp .fehbg ~/.fehbg
 cp .config/i3/clipboard_fix.sh ~/.config/i3/clipboard_fix.sh
 cp -r .wallpaper ~/.wallpaper 
