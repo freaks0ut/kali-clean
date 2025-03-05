@@ -1,6 +1,6 @@
 # Kali-Clean
 
-My kali i3 desktop setup. Some people have been asking so I wrote a quick installer to get going. 
+This is the kali i3 installation by xct. I updated the installation add added some features to optimize it for working with a MacBook Pro 14''.
 
 After cloning the repo just run ./install.sh from a non-root user. This updates kali and installs a lot of stuff, so it will take a while. Feel free to optimize ;)
 
@@ -10,7 +10,15 @@ After cloning the repo just run ./install.sh from a non-root user. This updates 
 ./install.sh
 ```
 
-After the script is done reboot and select i3 (top right corner) on the login screen. Then open a terminal (`ctrl+return`) run `lxappearance`and select ark-dark theme and change the icons to whatever you like (I used papyrus).
+After the script is done reboot and select i3 (top right corner) on the login screen.
+
+## Display Scaling
+
+```
+./i3-scale.sh
+```
+
+Just run the script and enter the scaling values to adjust the i3 elements to fit your setup.
 
 ## Credits
 
