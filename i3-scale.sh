@@ -1,122 +1,121 @@
 #!/bin/bash
 
-export DISPLAY=:0
-sleep 3  # Ensure display is fully loaded
-
-# Get current values
-CURRENT_DPI=$(xrdb -query | grep Xft.dpi | awk '{print $2}')
-CURRENT_TERM_FONT=$(grep -m1 'size =' ~/.config/alacritty/alacritty.toml | awk '{print $3}')
-CURRENT_ROFI_FONT=$(grep -oP 'font:\s*"\K[^"]+' ~/.config/rofi/config.rasi)
-CURRENT_HEADER_FONT=$(grep -m1 'font pango:' ~/.config/i3/config | awk -F ' ' '{print $(NF)}')
-CURRENT_SCREEN_RES=$(xrandr | grep '*' | awk '{print $1}')
-
-# Ask user to choose between resolutions
+# Choose resolution
 echo "Choose screen resolution:"
 echo "0: MacBook 14'' default resolution (3024x1964)"
 echo "1: 2560x1440 (for external displays)"
-read -p "Enter 0 or 1: " RESOLUTION_OPTION
+read -p "Enter 0 or 1: " RESOLUTION_CHOICE
 
-if [[ "$RESOLUTION_OPTION" == "0" ]]; then
-    NEW_RESOLUTION="3024x1964"
-    DPI=192
-elif [[ "$RESOLUTION_OPTION" == "1" ]]; then
-    NEW_RESOLUTION="2560x1440_60.00"
-    DPI=144
+# Set the resolution
+if [[ "$RESOLUTION_CHOICE" == "0" ]]; then
+    RESOLUTION="3024x1964"
+    SCALING_FACTOR="2.0"
+elif [[ "$RESOLUTION_CHOICE" == "1" ]]; then
+    RESOLUTION="2560x1440"
+    SCALING_FACTOR="1.5"
 else
-    echo "Invalid option. Exiting."
+    echo "Invalid choice."
     exit 1
 fi
 
-# Prompt user for font sizes
-echo "Enter Terminal Font Size (recommended: 16-18, current: $CURRENT_TERM_FONT):"
-read TERM_FONT_SIZE
-
-if [[ "$TERM_FONT_SIZE" -lt 10 || "$TERM_FONT_SIZE" -gt 30 ]]; then
-    echo "Error: Terminal font size should be between 10 and 30."
+# Ensure bc is installed
+if ! command -v bc &> /dev/null; then
+    echo "Error: bc is not installed. Install it with: sudo apt install bc"
     exit 1
 fi
 
-echo "Enter CMD+D Popup Font Size (recommended: 14-16, current: $CURRENT_ROFI_FONT):"
-read ROFI_FONT_SIZE
+# Apply resolution
+if ! xrandr | grep -q "$RESOLUTION"; then
+    echo "Creating new resolution: $RESOLUTION"
+    MODELINE=$(cvt $(echo $RESOLUTION | cut -dx -f1) $(echo $RESOLUTION | cut -dx -f2) 60 | grep Modeline | cut -d ' ' -f 2-)
+    xrandr --newmode $MODELINE
+    xrandr --addmode Virtual-1 $RESOLUTION
+fi
+xrandr --output Virtual-1 --mode $RESOLUTION
+echo "✅ Resolution applied: $RESOLUTION"
 
-if [[ "$ROFI_FONT_SIZE" -lt 10 || "$ROFI_FONT_SIZE" -gt 30 ]]; then
-    echo "Error: Rofi font size should be between 10 and 30."
-    exit 1
+# Set scaling factor for applications
+read -p "Enter scaling factor for applications (e.g., 1.0 for normal, 1.5 for HiDPI, 2.0 for Retina displays, default: $SCALING_FACTOR): " USER_SCALING_FACTOR
+SCALING_FACTOR="${USER_SCALING_FACTOR:-$SCALING_FACTOR}"
+
+# Apply DPI scaling correctly
+DPI_VALUE=$(echo "$SCALING_FACTOR * 96" | bc)
+echo "Xft.dpi: $DPI_VALUE" | xrdb -merge
+gsettings set org.gnome.desktop.interface scaling-factor $(printf "%.0f" "$SCALING_FACTOR") 2>/dev/null || echo "⚠️ GTK scaling might not be supported."
+export GDK_SCALE=$(printf "%.0f" "$SCALING_FACTOR")
+export QT_SCALE_FACTOR=$SCALING_FACTOR
+echo "✅ Scaling factor applied: $SCALING_FACTOR"
+
+# Prompt for font sizes
+CURRENT_TERM_FONT=$(grep -A2 "\[font.normal\]" ~/.config/alacritty/alacritty.toml | grep "size =" | cut -d= -f2 | tr -d ' ')
+read -p "Enter Terminal Font Size (recommended: 16-18, current: $CURRENT_TERM_FONT): " TERM_FONT_SIZE
+
+CURRENT_ROFI_FONT=$(grep "font:" ~/.config/rofi/config.rasi | cut -d'"' -f2)
+read -p "Enter CMD+D Popup Font Size (recommended: 14-16, current: $CURRENT_ROFI_FONT): " ROFI_FONT_SIZE
+
+CURRENT_HEADER_FONT=$(grep "font pango:" ~/.config/i3/config | cut -d' ' -f3-)
+read -p "Enter i3 Header Font Size (recommended: 14-16, current: $CURRENT_HEADER_FONT): " HEADER_FONT_SIZE
+
+# Update Alacritty font size
+sed -i "s/size = .*/size = $TERM_FONT_SIZE/" ~/.config/alacritty/alacritty.toml
+echo "✅ Terminal font updated to $TERM_FONT_SIZE"
+
+# Update Rofi font size
+sed -i "s/font: \".*\";/font: \"RobotoMono Nerd Font $ROFI_FONT_SIZE\";/" ~/.config/rofi/config.rasi
+echo "✅ CMD+D Popup font updated to $ROFI_FONT_SIZE"
+
+# Update i3 header font size
+sed -i "s/font pango:.*/font pango:RobotoMono Nerd Font Regular $HEADER_FONT_SIZE/" ~/.config/i3/config
+echo "✅ i3 Header font updated to $HEADER_FONT_SIZE"
+
+# Set Firefox scaling
+FIREFOX_PROFILE=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+if [[ -z "$FIREFOX_PROFILE" ]]; then
+    FIREFOX_PROFILE=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default" | head -n 1)
 fi
 
-echo "Enter i3 Header Font Size (recommended: 14-16, current: $CURRENT_HEADER_FONT):"
-read HEADER_FONT_SIZE
-
-# ✅ Ask for scaling factor
-echo "Enter scaling factor for applications (recommended: 1.5 for 2560x1440, 2.0 for MacBook default):"
-read SCALING_FACTOR
-
-# Apply DPI
-echo "Xft.dpi: $DPI" | xrdb -merge
-
-# ✅ Update Alacritty font size
-sed -i 's/^\(size =\) [0-9]\+/\1 '"$TERM_FONT_SIZE"'/' ~/.config/alacritty/alacritty.toml
-
-# ✅ Ensure Rofi font is correctly formatted in `config.rasi`
-if grep -q 'font:' ~/.config/rofi/config.rasi; then
-    sed -i 's|font: ".*"|font: "RobotoMono Nerd Font '"$ROFI_FONT_SIZE"'"|g' ~/.config/rofi/config.rasi
-else
-    echo -e '\nfont: "RobotoMono Nerd Font '"$ROFI_FONT_SIZE"'";' >> ~/.config/rofi/config.rasi
-fi
-
-# ✅ Ensure i3 uses the correct Rofi command with updated config
-if ! grep -q "rofi -show drun -config ~/.config/rofi/config.rasi" ~/.config/i3/config; then
-    sed -i "s|rofi -show drun|rofi -show drun -config ~/.config/rofi/config.rasi|" ~/.config/i3/config
-fi
-
-# ✅ Update i3 Header Font
-sed -i 's/font pango:.* [0-9]\+/font pango:RobotoMono Nerd Font Regular '"$HEADER_FONT_SIZE"'/' ~/.config/i3/config
-
-# ✅ Fix xrandr resolution (Create it if missing)
-AVAILABLE_MODES=$(xrandr | awk '{print $1}' | grep -E "^[0-9]+x[0-9]+$")
-if ! echo "$AVAILABLE_MODES" | grep -q "$NEW_RESOLUTION"; then
-    echo "Creating new resolution: $NEW_RESOLUTION"
-    if [[ "$NEW_RESOLUTION" == "2560x1440_60.00" ]]; then
-        xrandr --newmode "2560x1440_60.00"  241.50  2560 2720 2992 3424  1440 1443 1448 1481 -hsync +vsync
-        xrandr --addmode Virtual-1 "2560x1440_60.00"
-    elif [[ "$NEW_RESOLUTION" == "3024x1964" ]]; then
-        xrandr --newmode "3024x1964_60.00"  358.25  3024 3288 3624 4224  1964 1967 1977 2017 -hsync +vsync
-        xrandr --addmode Virtual-1 "3024x1964_60.00"
-    fi
-fi
-xrandr --output Virtual-1 --mode "$NEW_RESOLUTION"
-
-# ✅ Apply scaling for all graphical applications
-echo "Applying scaling for graphical applications..."
-gsettings set org.gnome.desktop.interface text-scaling-factor "$SCALING_FACTOR"
-gsettings set org.gnome.desktop.interface scaling-factor 2
-gsettings set org.gnome.desktop.interface cursor-size 48
-
-# ✅ Apply Firefox-specific scaling
-FIREFOX_PROFILE=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default*" | head -n 1)
 if [[ -d "$FIREFOX_PROFILE" ]]; then
+    echo "✅ Found Firefox profile: $FIREFOX_PROFILE"
+    echo "Setting Firefox scaling to $SCALING_FACTOR"
+
+    # Ensure Firefox is not running
+    pkill firefox
+    sleep 2
+
+    # Update user.js (persistent setting)
     echo "user_pref(\"layout.css.devPixelsPerPx\", \"$SCALING_FACTOR\");" > "$FIREFOX_PROFILE/user.js"
+
+    # Ensure prefs.js gets updated
+    if [[ -f "$FIREFOX_PROFILE/prefs.js" ]]; then
+        cp "$FIREFOX_PROFILE/prefs.js" "$FIREFOX_PROFILE/prefs.js.bak"
+        sed -i "/layout.css.devPixelsPerPx/d" "$FIREFOX_PROFILE/prefs.js"
+        echo "user_pref(\"layout.css.devPixelsPerPx\", \"$SCALING_FACTOR\");" >> "$FIREFOX_PROFILE/prefs.js"
+    else
+        echo "⚠️ Firefox prefs.js not found. Launching Firefox to generate it..."
+        firefox &
+        sleep 5
+        pkill firefox
+    fi
+
+    firefox &
+    echo "🔥 Firefox scaling updated. Restarting Firefox..."
+else
+    echo "⚠️ No Firefox profile found! Is Firefox installed?"
 fi
 
-# ✅ Apply Chrome/Chromium scaling
-if [ -f ~/.config/chromium/Default/Preferences ]; then
-    sed -i 's/"devtools":{"zoom":"[0-9]\+\.[0-9]\+"}/"devtools":{"zoom":"'"$SCALING_FACTOR"'"}' ~/.config/chromium/Default/Preferences
-fi
-
-# Reload i3 to apply changes
+# Restart i3
 i3-msg reload
 
-# Restart applications if requested
-echo "Do you want to restart Rofi and Terminal? (y/n)"
-read RESTART_CHOICE
+# Ask to restart Rofi and Terminal
+read -p "Do you want to restart Rofi and Terminal? (y/n) " RESTART_CHOICE
 if [[ "$RESTART_CHOICE" == "y" ]]; then
     pkill rofi
     pkill -f alacritty
     alacritty &
-    rofi -show drun -config ~/.config/rofi/config.rasi &
-    echo "Rofi and Terminal restarted."
+    rofi -show drun &
+    echo "✅ Rofi and Terminal restarted."
 else
     echo "Skipping restart."
 fi
 
-echo "Changes applied successfully!"
+echo "✅ All changes applied successfully!"
