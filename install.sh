@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update system
-sudo apt update && sudo apt upgrade -y
+#sudo apt update && sudo apt upgrade -y
 
 # Install core utilities
 sudo apt install -y wget curl git thunar 
@@ -58,7 +58,7 @@ mkdir -p ~/.config/alacritty
 
 # Copy configuration files
 cp .config/i3/config ~/.config/i3/config
-cp .config/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
+cp .config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 cp .config/i3/i3blocks.conf ~/.config/i3/i3blocks.conf
 cp .config/compton/compton.conf ~/.config/compton/compton.conf
 cp .config/rofi/config ~/.config/rofi/config
