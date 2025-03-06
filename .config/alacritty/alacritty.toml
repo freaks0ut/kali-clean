@@ -19,53 +19,54 @@ resize_increments = false
 history = 65535
 
 [font]
-normal = { family = "RobotoMono Nerd Font", style = "Regular" }
-bold = { family = "RobotoMono Nerd Font", style = "Bold" }
-italic = { family = "RobotoMono Nerd Font", style = "Italic" }
-bold_italic = { family = "RobotoMono Nerd Font", style = "Bold Italic" }
-size = 11
+normal = { family = "Iosevka Nerd Font", style = "Regular" }
+bold = { family = "Iosevka Nerd Font", style = "Bold" }
+italic = { family = "Iosevka Nerd Font", style = "Italic" }
+bold_italic = { family = "Iosevka Nerd Font", style = "Bold Italic" }
+size = 12  # Adjust size as needed
 
 offset = { x = 0, y = 0 }
 builtin_box_drawing = true
 
 [colors.primary]
-background = "#1E1E2E"
-foreground = "#CDD6F4"
-dim_foreground = "#CDD6F4"
-bright_foreground = "#CDD6F4"
+background = '0x000000'
+foreground = '0xeaeaea'
+
+#dim_foreground = "#CDD6F4"
+#bright_foreground = "#CDD6F4"
 
 [colors.cursor]
-text = "#1E1E2E"
-cursor = "#F5E0DC"
+#text = "#1E1E2E"
+#cursor = "#F5E0DC"
 
 [colors.selection]
 text = "#1E1E2E"
 background = "#F5E0DC"
 
 [colors.normal]
-black = "#45475A"
-red = "#F38BA8"
-green = "#A6E3A1"
-yellow = "#F9E2AF"
-blue = "#89B4FA"
-magenta = "#F5C2E7"
-cyan = "#94E2D5"
-white = "#BAC2DE"
+black =   '0x000000'
+red =     '0xd54e53'
+green =   '0xb9ca4a'
+yellow =  '0xe6c547'
+blue =    '0x7aa6da'
+magenta = '0xc397d8'
+cyan =    '0x70c0ba'
+white =   '0xeaeaea'
 
 [colors.bright]
-black = "#585B70"
-red = "#F38BA8"
-green = "#A6E3A1"
-yellow = "#F9E2AF"
-blue = "#89B4FA"
-magenta = "#F5C2E7"
-cyan = "#94E2D5"
-white = "#A6ADC8"
+black =   '0x666666'
+red =     '0xff3334'
+green =   '0x9ec400'
+yellow =  '0xe7c547'
+blue =    '0x7aa6da'
+magenta = '0xb77ee0'
+cyan =    '0x54ced6'
+white =   '0xffffff'
 
 [colors]
 indexed_colors = [
-  { index = 16, color = "#FAB387" },
-  { index = 17, color = "#F5E0DC" },
+ # { index = 16, color = "#FAB387" },
+ # { index = 17, color = "#F5E0DC" },
 ]
 draw_bold_text_with_bright_colors = true
 
@@ -81,7 +82,7 @@ blink_interval = 500
 blink_timeout = 0
 
 [mouse]
-hide_when_typing = true
+hide_when_typing = false
 bindings = [
   { mouse = "Middle", action = "PasteSelection" },
 ]
@@ -110,7 +111,6 @@ bindings = [
 
 [debug]
 log_level = "Warn"
-
 
 [bell]
 duration = 0
