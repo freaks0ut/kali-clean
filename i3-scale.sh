@@ -16,11 +16,8 @@ if [[ -z "$SCALING_FACTOR" || ! "$SCALING_FACTOR" =~ ^[0-9]+(\.[0-9]+)?$ ]]; the
     exit 1
 fi
 
-"$SCRIPT_DIR/set_display_scaling.sh" "$SCALING_FACTOR"
-
-# Set Font Sizes for Terminal
-echo "Change Font Sizes"
-"$SCRIPT_DIR/set_fonts.sh"
+# Set isplay scaling and fonts
+"$SCRIPT_DIR/set_display_scaling.sh"
 
 # Restart i3 to apply changes
 i3-msg reload
@@ -30,7 +27,7 @@ echo "Change Firefox Scaling"
 "$SCRIPT_DIR/scale_firefox.sh" "$SCALING_FACTOR"
 echo "Change Visual Studio Code Scaling"
 "$SCRIPT_DIR/scale_vscode.sh" "$SCALING_FACTOR"
-"$SCRIPT_DIR/scale_gtk.sh" "$SCALING_FACTOR"
+# "$SCRIPT_DIR/scale_gtk.sh" "$SCALING_FACTOR"
 "$SCRIPT_DIR/scale_burpsuite.sh" "$SCALING_FACTOR"
 echo "✅ Scaling factor applied: $SCALING_FACTOR"
 
