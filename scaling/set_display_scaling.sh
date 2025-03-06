@@ -69,9 +69,13 @@ fi
 
 
 ## IF automatic scaing does not work, add the modeline like this:
+# xrandr --rmmode "2560x1440_60.00"
 # cvt 2560 1440 60
 # xrandr --newmode "2560x1440_60.00" 241.50 2560 2720 2992 3424 1440 1443 1448 1481 -hsync +vsync
 # xrandr --addmode Virtual-1 "2560x1440_60.00"
 # xrandr --output Virtual-1 --mode "2560x1440_60.00"
 # You can verify the change by running:
 # xrandr | grep '*'
+
+# if required, load wallpaper new:
+# feh --bg-scale ~/.wallpaper/23.jpg
