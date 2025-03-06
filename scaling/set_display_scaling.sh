@@ -19,20 +19,20 @@ read -p "Enter 0 or 1: " RESOLUTION_OPTION
 if [[ "$RESOLUTION_OPTION" == "0" ]]; then
     NEW_RESOLUTION="2560x1600"
 elif [[ "$RESOLUTION_OPTION" == "1" ]]; then
-    NEW_RESOLUTION="2560x1440_60.00"
+    NEW_RESOLUTION="2560x1440_60.00"  # Ensure exact match
 else
     echo "❌ Invalid option. Exiting."
     exit 1
 fi
 
 # ✅ Check if the selected resolution is available
-if echo "$AVAILABLE_MODES" | grep -q "${NEW_RESOLUTION%_*}"; then
+if echo "$AVAILABLE_MODES" | grep -q "^${NEW_RESOLUTION}$"; then
     echo "Setting resolution to $NEW_RESOLUTION..."
     xrandr --output Virtual-1 --mode "$NEW_RESOLUTION"
 else
     echo "⚠️ Resolution $NEW_RESOLUTION is not available. Attempting to add it..."
 
-    # ✅ Only attempt to add 2560x1440, since 2560x1600 is already working
+    # ✅ Only attempt to add 2560x1440 if missing
     if [[ "$NEW_RESOLUTION" == "2560x1440_60.00" ]]; then
         MODELINE=$(cvt 2560 1440 60 | grep Modeline | cut -d ' ' -f 2-)
 
@@ -40,14 +40,6 @@ else
             echo "Adding new mode: $NEW_RESOLUTION"
             xrandr --newmode $MODELINE
             xrandr --addmode Virtual-1 "$NEW_RESOLUTION"
-
-            # ✅ Persist the resolution after reboot by adding it to ~/.xprofile
-            if ! grep -q "$NEW_RESOLUTION" ~/.xprofile; then
-                echo "Persisting resolution in ~/.xprofile..."
-                echo "xrandr --newmode $MODELINE" >> ~/.xprofile
-                echo "xrandr --addmode Virtual-1 \"$NEW_RESOLUTION\"" >> ~/.xprofile
-                echo "xrandr --output Virtual-1 --mode \"$NEW_RESOLUTION\"" >> ~/.xprofile
-            fi
 
             # ✅ Apply the newly added resolution
             echo "Applying new resolution..."
@@ -62,10 +54,15 @@ else
     fi
 fi
 
-# ✅ Verify resolution change
+# ✅ Verify resolution change (fix resolution name mismatch)
 NEW_CURRENT_RESOLUTION=$(xrandr | grep '*' | awk '{print $1}')
-if [[ "$NEW_CURRENT_RESOLUTION" == "${NEW_RESOLUTION%_*}" ]]; then
+
+# ✅ Normalize the resolution name before comparing
+NORMALIZED_CURRENT_RESOLUTION=$(echo "$NEW_CURRENT_RESOLUTION" | sed 's/_60.00//')
+NORMALIZED_NEW_RESOLUTION=$(echo "$NEW_RESOLUTION" | sed 's/_60.00//')
+
+if [[ "$NORMALIZED_CURRENT_RESOLUTION" == "$NORMALIZED_NEW_RESOLUTION" ]]; then
     echo "✅ Resolution successfully changed to $NEW_CURRENT_RESOLUTION!"
 else
-    echo "❌ Resolution change failed. Expected: ${NEW_RESOLUTION%_*}, but got: $NEW_CURRENT_RESOLUTION"
+    echo "❌ Resolution change failed. Expected: $NEW_RESOLUTION, but got: $NEW_CURRENT_RESOLUTION"
 fi
