@@ -66,3 +66,12 @@ if [[ "$NORMALIZED_CURRENT_RESOLUTION" == "$NORMALIZED_NEW_RESOLUTION" ]]; then
 else
     echo "❌ Resolution change failed. Expected: $NEW_RESOLUTION, but got: $NEW_CURRENT_RESOLUTION"
 fi
+
+
+## IF automatic scaing does not work, add the modeline like this:
+# cvt 2560 1440 60
+# xrandr --newmode "2560x1440_60.00" 241.50 2560 2720 2992 3424 1440 1443 1448 1481 -hsync +vsync
+# xrandr --addmode Virtual-1 "2560x1440_60.00"
+# xrandr --output Virtual-1 --mode "2560x1440_60.00"
+# You can verify the change by running:
+# xrandr | grep '*'
