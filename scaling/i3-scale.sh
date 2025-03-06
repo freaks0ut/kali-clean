@@ -16,8 +16,11 @@ if [[ -z "$SCALING_FACTOR" || ! "$SCALING_FACTOR" =~ ^[0-9]+(\.[0-9]+)?$ ]]; the
     exit 1
 fi
 
-# Set isplay scaling and fonts
+# Set display resolution
 "$SCRIPT_DIR/set_display_scaling.sh"
+
+# Set font size
+"$SCRIPT_DIR/set_fonts.sh"
 
 # Restart i3 to apply changes
 i3-msg reload
